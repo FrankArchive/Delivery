@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>买家页面</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+</head>
+
+<body>
+    <div id="header">
+        <ul>
+            <li name="myli"><a class="on">淘宝网首页</a></li>
+            <li name="myli"><a href="https://www.taobao.com">我的淘宝</a></li>
+            <li name="myli"><a href="https://www.taobao.com">购物车</a></li>
+            <li name="myli"><a href="https://www.taobao.com">收藏夹</a></li>
+            <li name="myli"><a href="https://www.taobao.com">商品分类</a></li>
+            <li name="myli"><a href="https://www.taobao.com">联系客服</a></li>
+        </ul>
+    </div>
+    <div id="content">
+        <div id="symbol">
+            <img src="static/img/123.PNG" />
+        </div>
+        <div id="thing">
+            <img src="static/img/33.PNG" />
+            <img src="static/img/44.PNG" />
+        </div>
+        <div id="ower">
+            <img src="static/img/55.PNG" />
+            <div id="owerinfor">
+                <form action="confirm" method="post" accept-charset="UTF-8">
+                    <table style="margin: 0 auto">
+                        <tr>
+                            <td>收件人姓名：</td>
+                            <td><input type="text" name="name"></td>
+                        </tr>
+                        <tr>
+                            <td>收件人电话：</td>
+                            <td><input type="tel" name="telnumber"></td>
+                        </tr>
+                        <tr>
+                            <td>收件人身份证号：</td>
+                            <td><input type="text" name="idnumber"></td>
+                        </tr>
+                        <tr>
+                            <td>收件人地址：</td>
+                            <td><input type="text" name="address"></td>
+                        </tr>
+                        <tr>
+                            <td>给卖家的留言：</td>
+                            <td><input type="text" name="message" id="message" placeholder="选填：对本次交易的说明(建议填写和卖家协商的内容)" onchange="place()"></td>
+                        </tr>
+                        <tr>
+                            <td>密钥(选填)：</td>
+                            <td><input type="password" name="pass"></td>
+                        </tr>
+                    </table>
+                    <button type="submit" style="margin: 20px auto;">提交订单</button>
+                </form>
+            </div>
+            <img src="static/img/66.PNG" />
+        </div>
+    </div>
+</body>
+
+</html>

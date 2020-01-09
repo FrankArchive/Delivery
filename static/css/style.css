@@ -1,0 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    height: 36px;
+    font-size: 13px;
+    background-color: #F0F0F0;
+}
+
+#header>ul {
+    list-style: none;
+    background-color: #F0F0F0;
+    margin: 0 15%;
+}
+
+#header>ul>li {
+    float: left;
+    margin: 0 42px;
+}
+
+#header>ul>li>a {
+    text-decoration: none;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    width: 100px;
+    margin-bottom: 1px;
+    text-align: center;
+    color: #707070;
+}
+
+#header>ul>li>a:hover {
+    color: #f60;
+}
+
+#header>ul>li>.on {
+    color: #f60;
+}
+
+#content>p {
+    font-size: 17px;
+    font-family: "Arial Black";
+    padding-left: 18.5%;
+    margin-top: 30px;
+}
+
+#content>img {
+    margin-left: 18.5%;
+}
+
+#symbol>img {
+    margin-top: 30px;
+    margin-left: 18.5%;
+}
+
+.buy {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+#code {
+    height: 200px;
+    width: 300px;
+    margin: 0 20%
+}
+
+#code>img {
+    height: 200px;
+    width: 200px;
+}
+
+#liuyan {
+    width: 993px;
+    height: 50px;
+    margin: 0 auto;
+    line-height: 1.5em;
+    text-indent: 2em;
+}
+
+#footer {
+    text-align: center;
+}
+
+#footer>button {
+    width: 182px;
+    height: 39px;
+    background-color: #f40;
+    margin: 20px auto;
+    color: #FFFFFF;
+    border: 0px;
+}
+
+#content {
+    height: 900px;
+}
+
+#symbol {
+    text-align: center;
+}
+
+#symbol>img {
+    margin-top: 30px;
+}
+
+#thing {
+    text-align: center;
+}
+
+#ower {
+    text-align: center;
+}
+
+#ower>img {
+    margin-top: 30px;
+}
+
+#owerinfor {
+    text-align: center;
+}
+
+#owerinfor>form {
+    font-size: 13px;
+}
+
+#owerinfor>form>table>tbody>tr {
+    height: 50px;
+}
+
+#owerinfor>form>table>tbody>tr>td>input {
+    width: 320px;
+}
+
+#footer {
+    text-align: center;
+}
+
+button {
+    margin-top: 100px;
+    width: 182px;
+    height: 39px;
+    background-color: #f40;
+    color: #FFFFFF;
+    border: 0px;
+}
