@@ -112,13 +112,7 @@ paths:
       parameters:
         - in: formData
           name: token
-          description: 每个用户都能获取到一个token，用于标记自己的账户，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方
-          required: true
-          type: string
-        - in: formData
-          name: destination
-          description: |
-            每个用户都能获取到一个token，用于标记自己的账户，然而通过token无法获知用户个人信息
+          description: 每个用户都能获取到一个token，用于标记自己的账户及位置，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方
           required: true
           type: string
       responses:
@@ -128,93 +122,9 @@ paths:
             type: object
             description: 一个快递订单
             properties:
-              hash:
+              uuid:
                 type: string
-                description: 快递的唯一标识，随机字符串
-              receiver:
-                type: object
-                description: 只有用户自己有权限访问此object
-                properties:
-                  id:
-                    format: int32
-                    example: 1
-                    type: integer
-                  username:
-                    type: string
-                    example: Frank
-                  phone:
-                    type: string
-                    example: '8612345678901'
-                required:
-                  - id
-                  - username
-              current:
-                type: object
-                description: 快递网络的节点（公开）
-                properties:
-                  location:
-                    type: string
-                    example: 陕西省西安市唐延路23号
-                  manager:
-                    type: string
-                    example: Frank
-                  connected:
-                    type:
-                      - string
-                      - array
-                    description: 与此节点相邻的节点
-                    items:
-                      $ref: '#/definitions/NodeItem'
-                required:
-                  - location
-                  - manager
-                  - connected
-              next:
-                type: object
-                description: 快递网络的节点（公开）
-                properties:
-                  location:
-                    type: string
-                    example: 陕西省西安市唐延路23号
-                  manager:
-                    type: string
-                    example: Frank
-                  connected:
-                    type:
-                      - string
-                      - array
-                    description: 与此节点相邻的节点
-                    items:
-                      $ref: '#/definitions/NodeItem'
-                required:
-                  - location
-                  - manager
-                  - connected
-              path:
-                type: array
-                items:
-                  type: object
-                  description: 快递网络的节点（公开）
-                  properties:
-                    location:
-                      type: string
-                      example: 陕西省西安市唐延路23号
-                    manager:
-                      type: string
-                      example: Frank
-                    connected:
-                      type:
-                        - string
-                        - array
-                      description: 与此节点相邻的节点
-                      items:
-                        $ref: '#/definitions/NodeItem'
-                  required:
-                    - location
-                    - manager
-                    - connected
-            required:
-              - hash
+                description: 快件的唯一标识
         '400':
           description: 不支持向目的地运送（附近没有节点）
       operationId: send_package
@@ -236,284 +146,17 @@ paths:
                 description: 寄出的快递（作为寄件方），只能看到快递是否送达
                 type: array
                 items:
-                  type: object
-                  description: 一个快递订单
-                  properties:
-                    hash:
-                      type: string
-                      description: 快递的唯一标识，随机字符串
-                    receiver:
-                      type: object
-                      description: 只有用户自己有权限访问此object
-                      properties:
-                        id:
-                          format: int32
-                          example: 1
-                          type: integer
-                        username:
-                          type: string
-                          example: Frank
-                        phone:
-                          type: string
-                          example: '8612345678901'
-                      required:
-                        - id
-                        - username
-                    current:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    next:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    path:
-                      type: array
-                      items:
-                        type: object
-                        description: 快递网络的节点（公开）
-                        properties:
-                          location:
-                            type: string
-                            example: 陕西省西安市唐延路23号
-                          manager:
-                            type: string
-                            example: Frank
-                          connected:
-                            type:
-                              - string
-                              - array
-                            description: 与此节点相邻的节点
-                            items:
-                              $ref: '#/definitions/NodeItem'
-                        required:
-                          - location
-                          - manager
-                          - connected
-                  required:
-                    - hash
+                  $ref: '#/definitions/PackageItem'
               delivering:
                 description: 运送的快递（作为派件方），只能看到快递当前位置与其下一站
                 type: array
                 items:
-                  type: object
-                  description: 一个快递订单
-                  properties:
-                    hash:
-                      type: string
-                      description: 快递的唯一标识，随机字符串
-                    receiver:
-                      type: object
-                      description: 只有用户自己有权限访问此object
-                      properties:
-                        id:
-                          format: int32
-                          example: 1
-                          type: integer
-                        username:
-                          type: string
-                          example: Frank
-                        phone:
-                          type: string
-                          example: '8612345678901'
-                      required:
-                        - id
-                        - username
-                    current:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    next:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    path:
-                      type: array
-                      items:
-                        type: object
-                        description: 快递网络的节点（公开）
-                        properties:
-                          location:
-                            type: string
-                            example: 陕西省西安市唐延路23号
-                          manager:
-                            type: string
-                            example: Frank
-                          connected:
-                            type:
-                              - string
-                              - array
-                            description: 与此节点相邻的节点
-                            items:
-                              $ref: '#/definitions/NodeItem'
-                        required:
-                          - location
-                          - manager
-                          - connected
-                  required:
-                    - hash
+                  $ref: '#/definitions/PackageItem'
               receiving:
                 description: 收取的快递（作为收件方），能看到快递的完整寄送路线
                 type: array
                 items:
-                  type: object
-                  description: 一个快递订单
-                  properties:
-                    hash:
-                      type: string
-                      description: 快递的唯一标识，随机字符串
-                    receiver:
-                      type: object
-                      description: 只有用户自己有权限访问此object
-                      properties:
-                        id:
-                          format: int32
-                          example: 1
-                          type: integer
-                        username:
-                          type: string
-                          example: Frank
-                        phone:
-                          type: string
-                          example: '8612345678901'
-                      required:
-                        - id
-                        - username
-                    current:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    next:
-                      type: object
-                      description: 快递网络的节点（公开）
-                      properties:
-                        location:
-                          type: string
-                          example: 陕西省西安市唐延路23号
-                        manager:
-                          type: string
-                          example: Frank
-                        connected:
-                          type:
-                            - string
-                            - array
-                          description: 与此节点相邻的节点
-                          items:
-                            $ref: '#/definitions/NodeItem'
-                      required:
-                        - location
-                        - manager
-                        - connected
-                    path:
-                      type: array
-                      items:
-                        type: object
-                        description: 快递网络的节点（公开）
-                        properties:
-                          location:
-                            type: string
-                            example: 陕西省西安市唐延路23号
-                          manager:
-                            type: string
-                            example: Frank
-                          connected:
-                            type:
-                              - string
-                              - array
-                            description: 与此节点相邻的节点
-                            items:
-                              $ref: '#/definitions/NodeItem'
-                        required:
-                          - location
-                          - manager
-                          - connected
-                  required:
-                    - hash
+                  $ref: '#/definitions/PackageItem'
       operationId: list_package
       parameters:
         - type: string
@@ -529,10 +172,22 @@ paths:
       description: 表示此快递成功到达下一站，只有站点manager可以调用
       tags:
         - deliverer
+      operationId: package_arrival
+      parameters:
+        - in: formData
+          type: string
+          name: uuid
+          description: 快递的唯一标识
+      consumes:
+        - application/x-www-form-urlencoded
       responses:
         '200':
           description: 成功送达当前站点
-      operationId: package_arrival
+        '403':
+          description: 调用者并非当前快递下一站的管理员
+          schema:
+            type: object
+            properties: {}
   /token:
     put:
       description: 生成一个指向当前账户的token
@@ -542,33 +197,11 @@ paths:
             type: object
             properties:
               user:
-                type: object
-                description: 只有用户自己有权限访问此object
-                properties:
-                  id:
-                    format: int32
-                    example: 1
-                    type: integer
-                  username:
-                    type: string
-                    example: Frank
-                  phone:
-                    type: string
-                    example: '8612345678901'
-                required:
-                  - id
-                  - username
-              id:
-                type: integer
-                description: token id (used for deleting them)
+                $ref: '#/definitions/UserItem'
               token:
-                type: string
-                description: the generated token
-                example: 32b3efe6-66d7-11ea-a9e2-acbc32bf75cf
+                $ref: '#/definitions/TokenItem'
             required:
               - user
-              - id
-              - token
           description: 生成成功
       tags:
         - users
@@ -581,14 +214,7 @@ paths:
           schema:
             type: array
             items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: token id
-                token:
-                  type: string
-                  description: active token
+              $ref: '#/definitions/TokenItem'
           description: 已列出所有token
       tags:
         - users
@@ -636,103 +262,30 @@ definitions:
     type: object
     description: 一个快递订单
     properties:
-      hash:
+      uuid:
         type: string
         description: 快递的唯一标识，随机字符串
       receiver:
-        type: object
-        description: 只有用户自己有权限访问此object
-        properties:
-          id:
-            format: int32
-            example: 1
-            type: integer
-          username:
-            type: string
-            example: Frank
-          phone:
-            type: string
-            example: '8612345678901'
-        required:
-          - id
-          - username
+        $ref: '#/definitions/UserItem'
       current:
-        type: object
-        description: 快递网络的节点（公开）
-        properties:
-          location:
-            type: string
-            example: 陕西省西安市唐延路23号
-          manager:
-            type: string
-            example: Frank
-          connected:
-            type:
-              - string
-              - array
-            description: 与此节点相邻的节点
-            items:
-              $ref: '#/definitions/NodeItem'
-        required:
-          - location
-          - manager
-          - connected
+        $ref: '#/definitions/NodeItem'
       next:
-        type: object
-        description: 快递网络的节点（公开）
-        properties:
-          location:
-            type: string
-            example: 陕西省西安市唐延路23号
-          manager:
-            type: string
-            example: Frank
-          connected:
-            type:
-              - string
-              - array
-            description: 与此节点相邻的节点
-            items:
-              $ref: '#/definitions/NodeItem'
-        required:
-          - location
-          - manager
-          - connected
+        $ref: '#/definitions/NodeItem'
       path:
         type: array
         items:
-          type: object
-          description: 快递网络的节点（公开）
-          properties:
-            location:
-              type: string
-              example: 陕西省西安市唐延路23号
-            manager:
-              type: string
-              example: Frank
-            connected:
-              type:
-                - string
-                - array
-              description: 与此节点相邻的节点
-              items:
-                $ref: '#/definitions/NodeItem'
-          required:
-            - location
-            - manager
-            - connected
+          $ref: '#/definitions/NodeItem'
     required:
-      - hash
+      - uuid
   NodeItem:
     type: object
     description: 快递网络的节点（公开）
     properties:
       location:
-        type: string
         example: 陕西省西安市唐延路23号
-      manager:
         type: string
-        example: Frank
+      manager:
+        $ref: '#/definitions/UserItem'
       connected:
         type:
           - string
@@ -744,6 +297,18 @@ definitions:
       - location
       - manager
       - connected
+  TokenItem:
+    title: TokenItem
+    type: object
+    properties:
+      id:
+        type: integer
+      token:
+        type: string
+      address:
+        $ref: '#/definitions/NodeItem'
+      user:
+        $ref: '#/definitions/UserItem'
 host: delivery.frankli.site
 basePath: /api/v1
 schemes:
