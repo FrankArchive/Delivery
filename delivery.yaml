@@ -49,22 +49,28 @@ paths:
       description: |
         通过用户名、密码与电话号码进行注册
       parameters:
-        - in: formData
-          name: username
-          type: string
-          description: 用户名
-        - in: formData
-          name: password
-          type: string
-          description: 密码
-        - in: formData
-          name: phone
-          type: string
-          description: 手机号
-        - in: formData
-          name: captcha
-          description: 验证码
-          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              username:
+                description: 用户名
+                type: string
+              password:
+                description: 密码
+                type: string
+              phone:
+                description: 手机号
+                type: string
+              captcha:
+                description: 验证码
+                type: string
+            required:
+              - username
+              - password
+              - phone
+              - captcha
       responses:
         '200':
           description: 注册成功
@@ -79,19 +85,24 @@ paths:
       description: |
         通过用户名与密码进行登陆
       parameters:
-        - in: formData
-          name: username
-          description: 用户名
-          required: false
-          type: string
-        - in: formData
-          name: password
-          description: 密码
-          type: string
-        - in: formData
-          name: captcha
-          description: 验证码
-          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              username:
+                description: 用户名
+                type: string
+              password:
+                description: 密码
+                type: string
+              captcha:
+                description: 验证码
+                type: string
+            required:
+              - username
+              - password
+              - captcha
       responses:
         '200':
           description: 登陆成功
@@ -110,11 +121,17 @@ paths:
       consumes:
         - application/x-www-form-urlencoded
       parameters:
-        - in: formData
-          name: token
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: 用户及地址的标识
+            required:
+              - token
           description: 每个用户都能获取到一个token，用于标记自己的账户及位置，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方
-          required: true
-          type: string
       responses:
         '200':
           description: 成功下单
@@ -174,10 +191,16 @@ paths:
         - deliverer
       operationId: package_arrival
       parameters:
-        - in: formData
-          type: string
-          name: uuid
-          description: 快递的唯一标识
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: 快递的唯一标识
+            required:
+              - uuid
       consumes:
         - application/x-www-form-urlencoded
       responses:
@@ -203,10 +226,24 @@ paths:
             required:
               - user
           description: 生成成功
+        '400':
+          description: 对应的节点不存在，无法生成
+          schema:
+            type: object
+            properties: {}
       tags:
         - users
         - sender
       operationId: generate_token
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              node_uuid:
+                type: string
+                description: 绑定的节点的唯一标识，作为收货地址
     get:
       description: 列出所有生成的指向当前账户的token
       responses:
@@ -226,16 +263,22 @@ paths:
         '200':
           description: token deactivated
         '400':
-          description: id不正确（账户中没有对应的token）
+          description: 对应的token不存在，无法删除
           schema:
             type: object
             properties: {}
       parameters:
-        - type: integer
-          in: query
-          name: id
-          description: token id（即创建与列表时给出的id）
-          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: token id（即创建与列表时给出的id）
+            required:
+              - id
+          description: ''
       operationId: delete_token
       tags:
         - users
@@ -293,7 +336,11 @@ definitions:
         description: 与此节点相邻的节点
         items:
           $ref: '#/definitions/NodeItem'
+      uuid:
+        type: string
+        description: 节点的唯一标识
     required:
+      - uuid
       - location
       - manager
       - connected
