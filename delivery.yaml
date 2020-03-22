@@ -23,7 +23,9 @@ tags:
 paths:
   /captcha:
     get:
-      description: 获取一张图片验证码，同时更新session
+      description: |-
+        获取一张图片验证码，同时更新session
+        验证码为base64 png
       produces:
         - image/png
       responses:
@@ -34,7 +36,10 @@ paths:
               type: string
               description: session
           schema:
-            type: file
+            type: object
+            properties:
+              img:
+                type: string
       tags:
         - guest
       operationId: get_captcha
@@ -74,6 +79,12 @@ paths:
       responses:
         '200':
           description: 注册成功
+        '400':
+          description: session无效（请先调用/captcha）
+          schema: {}
+        '403':
+          description: 用户名已被占用
+          schema: {}
   /login:
     post:
       tags:
@@ -128,10 +139,10 @@ paths:
             properties:
               token:
                 type: string
-                description: 用户及地址的标识
+                description: 用户及地址的标识(每个用户都能获取到一个token，用于标记自己的账户及位置，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方)
             required:
               - token
-          description: 每个用户都能获取到一个token，用于标记自己的账户及位置，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方
+          description: 包含用户通过其他途径发送给寄件人的token
       responses:
         '200':
           description: 成功下单
@@ -186,7 +197,9 @@ paths:
             - sending
             - delivering
     patch:
-      description: 表示此快递成功到达下一站，只有站点manager可以调用
+      description: |-
+        表示此快递成功到达下一站，只有站点manager与收货者可以调用
+        若收货方调用此接口，则表示自己已收到快递，且只能在快递处在最终node时可以调用
       tags:
         - deliverer
       operationId: package_arrival
@@ -201,6 +214,7 @@ paths:
                 description: 快递的唯一标识
             required:
               - uuid
+          description: ''
       consumes:
         - application/x-www-form-urlencoded
       responses:
