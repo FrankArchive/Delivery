@@ -297,6 +297,19 @@ paths:
       tags:
         - users
         - receiver
+  /nodes:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NodeItem'
+      operationId: get_nodes
+      description: 获取交通网络信息
 definitions:
   UserItem:
     type: object
