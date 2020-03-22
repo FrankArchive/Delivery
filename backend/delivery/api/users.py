@@ -22,7 +22,7 @@ class Captcha(Resource):
         img = generator.generate(captcha)
         session['captcha'] = captcha
         data = f'data:image/png;base64, {base64.b64encode(img.getvalue()).decode()}'
-        return {'img': data}
+        return {'img': data, 'data': captcha}
 
 
 @users.route('login')
@@ -41,6 +41,7 @@ class Login(Resource):
             abort(403)
         if not verify_password(req['password'], user.password):
             abort(403)
+        session['user_id'] = user.id
         return {}
 
 
@@ -57,7 +58,6 @@ class Register(Resource):
         session.pop('captcha')
         if User.query.filter_by(username=req['username']).first():
             abort(403)
-        req['password'] = hash_password(req['password'])
         db.session.add(User(**req))
         db.session.commit()
         return {}
