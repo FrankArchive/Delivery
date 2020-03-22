@@ -345,6 +345,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/NodeItem'
+      courier:
+        $ref: '#/definitions/UserItem'
     required:
       - uuid
   NodeItem:
