@@ -1,0 +1,6 @@
+# Default ignored files
+__pycache__/
+.idea/
+.vscode/
+*.pyc
+test.db
