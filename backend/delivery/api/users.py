@@ -2,7 +2,7 @@ import base64
 import random
 
 from captcha.image import ImageCaptcha
-from flask import abort, request, session
+from flask import abort, request, session, current_app
 from flask_restplus import Namespace, Resource
 
 from delivery.models import User, db
@@ -22,7 +22,10 @@ class Captcha(Resource):
         img = generator.generate(captcha)
         session['captcha'] = captcha
         data = f'data:image/png;base64, {base64.b64encode(img.getvalue()).decode()}'
-        return {'img': data, 'data': captcha}
+        if current_app.debug:
+            return {'img': data, 'data': captcha}
+        else:
+            return {'img': data}
 
 
 @users.route('login')

@@ -20,7 +20,7 @@ class UserSchema(ma.ModelSchema):
 
 
 class NodeSchema(ma.ModelSchema):
-    manager = fields.Nested(UserSchema, only='username')
+    manager = fields.Nested(UserSchema, only=['username'])
     views = {
         '': []
     }
