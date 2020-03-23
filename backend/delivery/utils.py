@@ -1,5 +1,6 @@
 import functools
 import os
+
 from flask import request, abort, session
 from passlib.hash import bcrypt_sha256
 from sqlalchemy.engine.url import make_url
@@ -21,6 +22,21 @@ def verify_keys(d: dict):
         return __verify_keys
 
     return _verify_keys
+
+
+def verify_captcha(func):
+    @functools.wraps(func)
+    def _verify_captcha(*args, **kwargs):
+        req = request.json or request.form
+        if 'captcha' not in session:
+            abort(400, 'Captcha Session Invalid, start a session by calling /api/v1/captcha')
+        if req['captcha'].lower() != session['captcha'].lower():
+            session.pop('captcha')
+            abort(400, 'Captcha Invalid')
+        session.pop('captcha')
+        return func(*args, **kwargs)
+
+    return _verify_captcha
 
 
 def authed(func):

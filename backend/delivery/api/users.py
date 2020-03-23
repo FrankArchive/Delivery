@@ -6,7 +6,7 @@ from flask import abort, request, session, current_app
 from flask_restx import Namespace, Resource
 
 from delivery.models import User, db
-from delivery.utils import verify_keys, verify_password, hash_password
+from delivery.utils import verify_keys, verify_password, verify_captcha
 
 users = Namespace("users")
 generator = ImageCaptcha()
@@ -17,7 +17,7 @@ class Captcha(Resource):
     @staticmethod
     def get():
         captcha = ''.join(random.choices(
-            '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY', k=4
+            '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPRTUVXY', k=4
         ))
         img = generator.generate(captcha)
         session['captcha'] = captcha
@@ -34,11 +34,9 @@ class Login(Resource):
         'username': str, 'password': str,
         'captcha': str,
     })
+    @verify_captcha
     def post(self):
         req = request.json
-        if 'captcha' not in session or req['captcha'] != session['captcha']:
-            abort(400)
-        session.pop('captcha')
         user = User.query.filter_by(username=req['username']).first()
         if user is None:
             abort(403)
@@ -54,11 +52,9 @@ class Register(Resource):
         'username': str, 'password': str,
         'phone': str, 'captcha': str
     })
+    @verify_captcha
     def post(self):
         req = request.json
-        if 'captcha' not in session or req['captcha'] != session['captcha']:
-            abort(400)
-        session.pop('captcha')
         if User.query.filter_by(username=req['username']).first():
             abort(403)
         db.session.add(User(**req))
