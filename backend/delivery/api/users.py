@@ -3,7 +3,7 @@ import random
 
 from captcha.image import ImageCaptcha
 from flask import abort, request, session, current_app
-from flask_restplus import Namespace, Resource
+from flask_restx import Namespace, Resource
 
 from delivery.models import User, db
 from delivery.utils import verify_keys, verify_password, hash_password

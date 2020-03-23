@@ -1,5 +1,5 @@
 from flask import session, request, abort
-from flask_restplus import Namespace, Resource
+from flask_restx import Namespace, Resource
 
 from delivery.models import Token, Node, db
 from delivery.schemas import TokenSchema, UserSchema
