@@ -1,7 +1,15 @@
+Werkzeug==0.16.1
 flask
-flask-restplus
+flask-restx
 flask-session
 flask-sqlalchemy
+PyMySQL
+SQLAlchemy-Utils
 flask-marshmallow
 marshmallow-sqlalchemy
+flask-migrate
 passlib
+captcha
+
+gunicorn
+gevent

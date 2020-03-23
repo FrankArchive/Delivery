@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+    app:
+        build: .
+        ports:
+            - 127.0.0.1:8001:8000
+        environment:
+            - DB_URL=mysql+pymysql://delivery:delivery@db/delivery
+            - SCRET_KEY=change_me
+            - WORKERS=2
+            - ACCESS_LOG=-
+            - ERROR_LOG=-
+        volumes: 
+            - ./delivery:/opt/app/delivery
+            - ./migrations:/opt/app/migrations
+            - ./docker-entrypoint.sh:/opt/app/docker-entrypoint.sh
+        depends_on:
+            - db
+        networks:
+            default:
+            internal:
+    db:
+        image: mariadb:10.4
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=delivery
+            - MYSQL_USER=delivery
+            - MYSQL_PASSWORD=delivery
+            - MYSQL_DATABASE=delivery
+        volumes:
+            - .data/mysql:/var/lib/mysql
+        networks:
+            internal:
+        # This command is required to set important mariadb defaults
+        command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
+
+networks:
+    default:
+    internal:
+        internal: true

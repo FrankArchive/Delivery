@@ -29,8 +29,8 @@ class Node(db.Model):
     __tablename__ = 'node'
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(32))
-    _connected = db.Column(db.String)
-    location = db.Column(db.String)
+    _connected = db.Column(db.Text)
+    location = db.Column(db.Text)
     manager_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     manager = db.relationship(

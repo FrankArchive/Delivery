@@ -1,7 +1,9 @@
 import functools
-
+import os
 from flask import request, abort, session
 from passlib.hash import bcrypt_sha256
+from sqlalchemy.engine.url import make_url
+from sqlalchemy_utils import create_database, database_exists
 
 
 def verify_keys(d: dict):
@@ -37,3 +39,15 @@ def hash_password(plaintext):
 
 def verify_password(plaintext, ciphertext):
     return bcrypt_sha256.verify(plaintext, ciphertext)
+
+
+def get_db():
+    url = make_url(os.getenv('DB_URL') or 'sqlite:///test.db')
+    if url.drivername.startswith('mysql'):
+        url.query["charset"] = "utf8mb4"
+    if not database_exists(url):
+        if url.drivername.startswith("mysql"):
+            create_database(url, encoding="utf8mb4")
+        else:
+            create_database(url)
+    return url
