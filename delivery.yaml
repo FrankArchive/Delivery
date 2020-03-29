@@ -140,8 +140,11 @@ paths:
               token:
                 type: string
                 description: 用户及地址的标识(每个用户都能获取到一个token，用于标记自己的账户及位置，然而通过token无法获知用户个人信息，通过其他渠道交给寄件方)
+              node_uuid:
+                type: string
             required:
               - token
+              - node_uuid
           description: 包含用户通过其他途径发送给寄件人的token
       responses:
         '200':
@@ -154,7 +157,17 @@ paths:
                 type: string
                 description: 快件的唯一标识
         '400':
-          description: 不支持向目的地运送（附近没有节点）
+          description: 无法创建
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |-
+                  1 不支持向目的地运送（附近没有节点）
+                  2 始发地不存在
+            required:
+              - message
       operationId: send_package
     get:
       description: |
@@ -368,11 +381,13 @@ definitions:
       uuid:
         type: string
         description: 节点的唯一标识
+      contact:
+        type: string
     required:
-      - uuid
       - location
       - manager
       - connected
+      - uuid
   TokenItem:
     title: TokenItem
     type: object
