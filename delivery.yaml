@@ -238,6 +238,11 @@ paths:
           schema:
             type: object
             properties: {}
+        '404':
+          description: 没有相应的包裹订单
+          schema:
+            type: object
+            properties: {}
   /token:
     put:
       description: 生成一个指向当前账户的token
@@ -372,9 +377,7 @@ definitions:
       manager:
         $ref: '#/definitions/UserItem'
       connected:
-        type:
-          - string
-          - array
+        type: array
         description: 与此节点相邻的节点
         items:
           $ref: '#/definitions/NodeItem'
