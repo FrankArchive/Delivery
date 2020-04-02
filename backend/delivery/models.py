@@ -55,15 +55,27 @@ class Node(db.Model):
 class Package(db.Model):
     __tablename__ = 'package'
     id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(32))
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    courier_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     current_node_id = db.Column(db.Integer, db.ForeignKey('node.id'))
     next_node_id = db.Column(db.Integer, db.ForeignKey('node.id'))
 
-    current_node = db.relationship(
-        'Node', foreign_keys='Package.current_node_id', lazy='select'
-    )
-    next_node = db.relationship(
-        'Node', foreign_keys='Package.next_node_id', lazy='select'
-    )
+    courier = db.relationship('User', foreign_keys='Package.courier_id', lazy='select')
+    sender = db.relationship('User', foreign_keys='Package.sender_id', lazy='select')
+    receiver = db.relationship('User', foreign_keys='Package.receiver_id', lazy='select')
+    current = db.relationship('Node', foreign_keys='Package.current_node_id', lazy='select')
+    next = db.relationship('Node', foreign_keys='Package.next_node_id', lazy='select')
+
+    def __init__(self, sender_id, courier_id, receiver_id, next_node_id):
+        self.sender_id = sender_id
+        self.courier_id = courier_id
+        self.receiver_id = receiver_id
+        self.current_node_id = -1
+        self.next_node_id = next_node_id
+        self.token = str(uuid4())
 
 
 class Token(db.Model):
