@@ -1,10 +1,29 @@
 import functools
 import os
 
+import requests
 from flask import request, abort, session
 from passlib.hash import bcrypt_sha256
 from sqlalchemy.engine.url import make_url
 from sqlalchemy_utils import create_database, database_exists
+
+APP_ID = os.getenv('APP_ID')
+APP_SECRET = os.getenv('APP_SECRET')
+
+
+def get_user_openid(code):
+    res = requests.get(
+        'https://api.weixin.qq.com/sns/jscode2session',
+        params={
+            'appid': APP_ID,
+            'secret': APP_SECRET,
+            'js_code': code,
+            'grant_type': 'authorization_code',
+        }
+    ).json()
+    if 'errorcode' not in res.keys() or res['errorcode'] == 0:
+        return res['openid']
+    raise PermissionError('wx code error: ' + str(res['errmsg']))
 
 
 def verify_keys(d: dict):

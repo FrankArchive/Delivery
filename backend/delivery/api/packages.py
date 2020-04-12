@@ -44,7 +44,7 @@ class Packages(Resource):
     @authed
     @verify_keys({'uuid': str})
     def patch(self):
-        package = Packages.query.filter_by(token=request.json['uuid']).first()
+        package = Package.query.filter_by(token=request.json['uuid']).first()
 
         if not package:
             abort(404, 'No such package')

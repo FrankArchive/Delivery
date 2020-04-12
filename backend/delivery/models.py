@@ -13,16 +13,20 @@ ma = Marshmallow()
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
+    open_id = db.Column(db.String(50))
     username = db.Column(db.String(128))
     password = db.Column(db.String(128))
     phone = db.Column(db.String(32))
+    address = db.Column(db.Text)
     registeration_date = db.Column(
         db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, username, password, phone, *args, **kwargs):
+    def __init__(self, open_id, username, password, phone, address, *args, **kwargs):
+        self.open_id = open_id
         self.username = username
         self.password = hash_password(password)
         self.phone = phone
+        self.address = address
 
 
 class Node(db.Model):
