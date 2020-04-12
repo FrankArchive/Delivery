@@ -1,5 +1,8 @@
 #!/bin/sh
 
+ACCESS_LOG=${ACCESS_LOG:--}
+ERROR_LOG=${ERROR_LOG:--}
+
 if [ -n "$DB_URL" ]; then
   url=$(echo "$DB_URL" | awk -F[@//] '{print $4}')
   database=$(echo "$url" | awk -F[:] '{print $1}')

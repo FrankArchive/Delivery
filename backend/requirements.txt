@@ -11,6 +11,7 @@ flask-migrate
 passlib
 bcrypt
 captcha
+requests
 
 gunicorn
 gevent

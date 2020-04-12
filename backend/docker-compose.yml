@@ -9,8 +9,8 @@ services:
             - DB_URL=mysql+pymysql://delivery:delivery@db/delivery
             - SCRET_KEY=change_me
             - WORKERS=2
-            - ACCESS_LOG=-
-            - ERROR_LOG=-
+            - APP_ID=
+            - APP_SECRET=
         volumes: 
             - ./delivery:/opt/app/delivery
             - ./migrations:/opt/app/migrations
