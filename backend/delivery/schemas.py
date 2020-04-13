@@ -5,7 +5,10 @@ from .models import ma, Token, User, Node
 
 class UserSchema(ma.ModelSchema):
     views = {
-        'self': ['username', 'phone'],
+        'self': [
+            'username', 'phone', 'address',
+            'registeration_date'
+        ],
         'others': ['username']
     }
 
