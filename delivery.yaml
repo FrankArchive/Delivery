@@ -71,11 +71,14 @@ paths:
               captcha:
                 description: 验证码
                 type: string
+              address:
+                type: string
             required:
               - username
               - password
               - phone
               - captcha
+              - address
       responses:
         '200':
           description: 注册成功
