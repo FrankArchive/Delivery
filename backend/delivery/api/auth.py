@@ -44,12 +44,14 @@ class Login(Resource):
         if not verify_password(req['password'], user.password):
             abort(403, 'Wrong Password')
         code = request.json['code']
-        open_id = get_user_openid(code)
+        try:
+            open_id = get_user_openid(code)
+        except PermissionError:
+            abort(403, 'invalid wechat user')
         if user.open_id != open_id:
             abort(403, 'Wrong Wechat User')
         session['user_id'] = user.id
         return {}
-        pass
 
 
 @auth.route('register')
@@ -65,6 +67,10 @@ class Register(Resource):
         req = request.json
         if User.query.filter_by(username=req['username']).first():
             abort(403)
+        try:
+            req['open_id'] = get_user_openid(req['code'])
+        except PermissionError:
+            abort(403, 'invalid wechat user')
         db.session.add(User(**req))
         db.session.commit()
         return {}
