@@ -14,7 +14,7 @@ class Tokens(Resource):
     def get(self):
         return TokenSchema(many=True, view='query').dump(
             Token.query.filter_by(user_id=session['user_id']).all()
-        ).data
+        )
 
     @authed
     @verify_keys({'node_uuid': str})
@@ -26,8 +26,8 @@ class Tokens(Resource):
         db.session.add(token)
         db.session.commit()
         return {
-            'token': TokenSchema(view='generate').dump(token).data,
-            'user': UserSchema(view='self').dump(token.user).data
+            'token': TokenSchema(view='generate').dump(token),
+            'user': UserSchema(view='self').dump(token.user)
         }
 
     @authed

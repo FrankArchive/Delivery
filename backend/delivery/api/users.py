@@ -16,7 +16,7 @@ class Users(Resource):
             User.query.filter_by(
                 id=session['user_id']
             ).first()
-        ).data
+        )
 
     @authed
     def patch(self):

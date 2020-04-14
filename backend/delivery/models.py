@@ -32,7 +32,7 @@ class User(db.Model):
 class Node(db.Model):
     __tablename__ = 'node'
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(32))
+    uuid = db.Column(db.String(36))
     _connected = db.Column(db.Text)
     location = db.Column(db.Text)
     manager_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -59,7 +59,7 @@ class Node(db.Model):
 class Package(db.Model):
     __tablename__ = 'package'
     id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(32))
+    token = db.Column(db.String(36))
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     courier_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -85,7 +85,7 @@ class Package(db.Model):
 class Token(db.Model):
     __tablename__ = 'token'
     id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(32))
+    token = db.Column(db.String(36))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     address_id = db.Column(db.Integer, db.ForeignKey('node.id'))
 
