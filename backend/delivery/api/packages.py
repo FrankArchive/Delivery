@@ -10,9 +10,10 @@ packages = Namespace('packages')
 @packages.route('')
 class Packages(Resource):
     @authed
-    @verify_keys({'filter', str})
     def get(self):
-        f = request.json['filter']
+        if 'filter' not in request.args.keys():
+            abort(403, 'insufficient arguments')
+        f = request.args['filter']
         ret = {}
         for k, v in {'sending': 'sender_id',
                      'receiving': 'receiver_id',

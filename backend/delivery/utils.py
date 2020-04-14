@@ -35,7 +35,12 @@ def verify_keys(d: dict):
                 abort(403)
             for k, t in d.items():
                 if (k not in data.keys()) or (type(data[k]) != d[k]):
-                    abort(403)
+                    abort(
+                        403,
+                        'expected arguments: '+','.join(
+                            [f'{i}: {j}' for i, j in d.items()]
+                        )
+                    )
             return func(*args, **kwargs)
 
         return __verify_keys
