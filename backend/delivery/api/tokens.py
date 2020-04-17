@@ -36,6 +36,6 @@ class Tokens(Resource):
         token = Token.query.filter_by(id=request.json['id']).first()
         if token is None:
             abort(400)
-        db.session.remove(token)
+        db.session.delete(token)
         db.session.commit()
         return {}

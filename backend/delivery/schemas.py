@@ -25,14 +25,14 @@ class UserSchema(ma.ModelSchema):
 class NodeSchema(ma.ModelSchema):
     manager = fields.Nested(UserSchema, only=['username'])
     views = {
-        '': []
+        'public': ['uuid', 'manager', 'location', '_connected']
     }
 
     class Meta:
         model = Node
         include_fk = True
 
-    def __init__(self, view=None, *args, **kwargs):
+    def __init__(self, view='public', *args, **kwargs):
         if view:
             kwargs['only'] = self.views[view]
         super(NodeSchema, self).__init__(*args, **kwargs)
