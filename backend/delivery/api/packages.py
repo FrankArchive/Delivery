@@ -3,6 +3,7 @@ from flask_restx import Namespace, Resource
 
 from delivery.models import db, Package, Token, Node
 from delivery.utils import authed, verify_keys
+from delivery.calc import calculate_path
 
 packages = Namespace('packages')
 
@@ -26,17 +27,24 @@ class Packages(Resource):
     @verify_keys({'token': str, 'node_uuid': str})
     def post(self):
         token = Token.query.filter_by(token=request.json['token']).first()
-        first_node = Node.query.filter_by(uuid=request.json['node_uuid']).first()
+        first_node = Node.query.filter_by(
+            uuid=request.json['node_uuid']).first()
         if not token:
             abort(404, 'No such token')
         if not first_node:
             abort(404, 'No such node')
+
+        try:
+            path = calculate_path(first_node.id, token.address.id)
+        except ValueError:
+            abort(404, 'Unreachable')
 
         package = Package(
             sender_id=session['user_id'],
             courier_id=session['user_id'],
             receiver_id=token.user_id,
             next_node_id=first_node.id,
+            path=path,
         )
         db.session.add(package)
         db.session.commit()
@@ -49,10 +57,13 @@ class Packages(Resource):
 
         if not package:
             abort(404, 'No such package')
+        if package.receiver_id == session['user_id']:
+            package.progress = len(package.path)-1
+            db.session.commit()
+            return {'msg': 'successfully delivered'}
         if package.next.manager_id != session['user_id']:
             abort(403, 'Not node manager')
 
-        package.current_node_id = package.next_node_id
-        package.next_node_id = package.current_node_id + 1
+        package.progress = package.progress + 1
         db.session.commit()
-        return {}
+        return {'msg': 'package arrived at '+package.current_node.id}

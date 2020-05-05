@@ -3,7 +3,7 @@ from marshmallow import fields
 from .models import ma, Token, User, Node
 
 
-class UserSchema(ma.ModelSchema):
+class UserSchema(ma.SQLAlchemyAutoSchema):
     views = {
         'self': [
             'username', 'phone', 'address',
@@ -22,7 +22,7 @@ class UserSchema(ma.ModelSchema):
         super(UserSchema, self).__init__(*args, **kwargs)
 
 
-class NodeSchema(ma.ModelSchema):
+class NodeSchema(ma.SQLAlchemyAutoSchema):
     manager = fields.Nested(UserSchema, only=['username'])
     views = {
         'public': ['uuid', 'manager', 'location', '_connected']
@@ -38,7 +38,7 @@ class NodeSchema(ma.ModelSchema):
         super(NodeSchema, self).__init__(*args, **kwargs)
 
 
-class TokenSchema(ma.ModelSchema):
+class TokenSchema(ma.SQLAlchemyAutoSchema):
     user = fields.Nested(UserSchema, only=['name', 'phone'])
     address = fields.Nested(NodeSchema, only=['uuid', 'location', 'manager'])
     views = {

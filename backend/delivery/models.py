@@ -64,22 +64,41 @@ class Package(db.Model):
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     courier_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    current_node_id = db.Column(db.Integer, db.ForeignKey('node.id'))
-    next_node_id = db.Column(db.Integer, db.ForeignKey('node.id'))
+    progress = db.Column(db.Integer, default=0)
 
-    courier = db.relationship('User', foreign_keys='Package.courier_id', lazy='select')
-    sender = db.relationship('User', foreign_keys='Package.sender_id', lazy='select')
-    receiver = db.relationship('User', foreign_keys='Package.receiver_id', lazy='select')
-    current = db.relationship('Node', foreign_keys='Package.current_node_id', lazy='select')
-    next = db.relationship('Node', foreign_keys='Package.next_node_id', lazy='select')
+    _path = db.Column(db.Text)
 
-    def __init__(self, sender_id, courier_id, receiver_id, next_node_id):
+    @property
+    def path(self):
+        return [int(i) for i in self._path.split(';')]
+
+    @path.setter
+    def path(self, value: list):
+        self._path = ';'.join([str(i) for i in value])
+
+    @property
+    def current_node(self):
+        return Node.query.filter_by(self.path[self.progress]).first()
+
+    @property
+    def next_node(self):
+        return Node.query.filter_by(self.path[self.progress+1]).first()
+
+    courier = db.relationship(
+        'User', foreign_keys='Package.courier_id', lazy='select')
+    sender = db.relationship(
+        'User', foreign_keys='Package.sender_id', lazy='select')
+    receiver = db.relationship(
+        'User', foreign_keys='Package.receiver_id', lazy='select')
+
+    def __init__(self, sender_id, courier_id, receiver_id, next_node_id, path):
         self.sender_id = sender_id
         self.courier_id = courier_id
         self.receiver_id = receiver_id
         self.current_node_id = -1
         self.next_node_id = next_node_id
         self.token = str(uuid4())
+        self.path = path
 
 
 class Token(db.Model):
