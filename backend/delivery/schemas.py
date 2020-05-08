@@ -1,6 +1,6 @@
 from marshmallow import fields
 
-from .models import ma, Token, User, Node
+from .models import ma, Token, User, Node, Package
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -24,8 +24,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 
 class NodeSchema(ma.SQLAlchemyAutoSchema):
     manager = fields.Nested(UserSchema, only=['username'])
+    connected = fields.List(fields.Integer(required=True))
     views = {
-        'public': ['uuid', 'manager', 'location', '_connected']
+        'public': ['uuid', 'manager', 'location', 'connected']
     }
 
     class Meta:
@@ -39,11 +40,11 @@ class NodeSchema(ma.SQLAlchemyAutoSchema):
 
 
 class TokenSchema(ma.SQLAlchemyAutoSchema):
-    user = fields.Nested(UserSchema, only=['name', 'phone'])
+    user = fields.Nested(UserSchema, only=['username', 'phone'])
     address = fields.Nested(NodeSchema, only=['uuid', 'location', 'manager'])
     views = {
         'generate': ['token', 'address'],
-        'query': ['id', 'token', 'address'],
+        'query': ['id', 'user', 'token', 'address'],
     }
 
     class Meta:
@@ -54,3 +55,26 @@ class TokenSchema(ma.SQLAlchemyAutoSchema):
         if view:
             kwargs['only'] = self.views[view]
         super(TokenSchema, self).__init__(*args, **kwargs)
+
+
+class PackageSchema(ma.SQLAlchemyAutoSchema):
+    percent_progress = fields.Float(required=True)
+    path = fields.List(fields.Integer(required=True))
+    courier = fields.Nested(UserSchema, only=['username', 'phone'])
+    sender = fields.Nested(UserSchema, only=['username'])
+    current_node = fields.Nested(NodeSchema)
+    next_node = fields.Nested(NodeSchema)
+    views = {
+        'sending': ['token', 'percent_progress', 'path'],
+        'delivering': ['token', 'courier', 'current_node', 'next_node'],
+        'receiving': ['token', 'percent_progress', 'path', 'courier', 'sender', 'current_node', 'next_node'],
+    }
+
+    class Meta:
+        model = Package
+        include_fk = True
+
+    def __init__(self, view=None, *args, **kwargs):
+        if view:
+            kwargs['only'] = self.views[view]
+        super(PackageSchema, self).__init__(*args, **kwargs)

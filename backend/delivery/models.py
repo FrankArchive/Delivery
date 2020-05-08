@@ -69,6 +69,10 @@ class Package(db.Model):
     _path = db.Column(db.Text)
 
     @property
+    def percent_progress(self):
+        return self.progress / len(self.path)
+
+    @property
     def path(self):
         return [int(i) for i in self._path.split(';')]
 

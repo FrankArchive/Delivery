@@ -2,6 +2,7 @@ from flask import request, session, abort
 from flask_restx import Namespace, Resource
 
 from delivery.models import db, Package, Token, Node
+from delivery.schemas import PackageSchema
 from delivery.utils import authed, verify_keys
 from delivery.calc import calculate_path
 
@@ -19,8 +20,10 @@ class Packages(Resource):
         for k, v in {'sending': 'sender_id',
                      'receiving': 'receiver_id',
                      'delivering': 'courier_id'}.items():
-            ret[k] = Package.query.filter_by(**{v: session['user_id']}).all() \
+            pkgs = Package.query.filter_by(**{v: session['user_id']}).all() \
                 if f == 'all' or f == k else []
+            ret[k] = [PackageSchema(view=k).dump(item) for item in pkgs]
+
         return ret
 
     @authed
@@ -52,7 +55,7 @@ class Packages(Resource):
 
     @authed
     @verify_keys({'uuid': str})
-    def patch(self):
+    def put(self):
         package = Package.query.filter_by(token=request.json['uuid']).first()
 
         if not package:
