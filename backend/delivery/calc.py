@@ -3,7 +3,7 @@ from heapq import heappop, heappushpop
 
 
 def calculate_path(node_from, node_to):
-    visited = set([node_from])
+    visited = {node_from}
     dist = {node_from: 0}
     last = {}
     queue = [node_from]

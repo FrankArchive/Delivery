@@ -9,7 +9,8 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
             'username', 'phone', 'address',
             'registeration_date'
         ],
-        'others': ['username']
+        'others': ['username'],
+        'courier': ['username', 'phone']
     }
 
     class Meta:
@@ -66,7 +67,7 @@ class PackageSchema(ma.SQLAlchemyAutoSchema):
     next_node = fields.Nested(NodeSchema)
     views = {
         'sending': ['token', 'percent_progress', 'path'],
-        'delivering': ['token', 'courier', 'current_node', 'next_node'],
+        'delivering': ['token', 'address', 'phone'],
         'receiving': ['token', 'percent_progress', 'path', 'courier', 'sender', 'current_node', 'next_node'],
     }
 

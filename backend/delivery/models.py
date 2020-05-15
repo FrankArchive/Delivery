@@ -82,11 +82,11 @@ class Package(db.Model):
 
     @property
     def current_node(self):
-        return Node.query.filter_by(self.path[self.progress]).first()
+        return Node.query.filter_by(id=self.path[self.progress]).first()
 
     @property
     def next_node(self):
-        return Node.query.filter_by(self.path[self.progress+1]).first()
+        return Node.query.filter_by(id=self.path[self.progress + 1]).first()
 
     courier = db.relationship(
         'User', foreign_keys='Package.courier_id', lazy='select')
@@ -95,9 +95,9 @@ class Package(db.Model):
     receiver = db.relationship(
         'User', foreign_keys='Package.receiver_id', lazy='select')
 
-    def __init__(self, sender_id, courier_id, receiver_id, next_node_id, path):
+    def __init__(self, sender_id, receiver_id, next_node_id, path):
         self.sender_id = sender_id
-        self.courier_id = courier_id
+        self.courier_id = -1
         self.receiver_id = receiver_id
         self.current_node_id = -1
         self.next_node_id = next_node_id
@@ -123,3 +123,21 @@ class Token(db.Model):
         self.address_id = node_id
         self.user_id = user_id
         self.token = str(uuid4())
+
+
+class Courier(db.Model):
+    __tablename__ = 'courier'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    node_id = db.Column(db.Integer, db.ForeignKey('node.id'))
+
+    user = db.relationship(
+        'User', foreign_keys='Courier.user_id', lazy='select'
+    )
+    node = db.relationship(
+        'Node', foreign_keys='Courier.node_id', lazy='select'
+    )
+
+    def __init__(self, user_id, node_id):
+        self.user_id = user_id
+        self.node_id = node_id

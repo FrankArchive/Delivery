@@ -26,6 +26,10 @@ def get_user_openid(code):
     raise PermissionError('wx code error: ' + str(res['errmsg']))
 
 
+def notify_user(openid, data):
+    pass
+
+
 def verify_keys(d: dict):
     def _verify_keys(func):
         @functools.wraps(func)
@@ -37,7 +41,7 @@ def verify_keys(d: dict):
                 if (k not in data.keys()) or (type(data[k]) != d[k]):
                     abort(
                         403,
-                        'expected arguments: '+','.join(
+                        'expected arguments: ' + ','.join(
                             [f'{i}: {j}' for i, j in d.items()]
                         )
                     )

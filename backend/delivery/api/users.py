@@ -1,7 +1,7 @@
-from flask import session, request
+from flask import session, request, abort
 from flask_restx import Namespace, Resource
 
-from delivery.models import User, db
+from delivery.models import User, Node, db, Courier
 from delivery.schemas import UserSchema
 from delivery.utils import authed
 
@@ -29,3 +29,13 @@ class Users(Resource):
                 user.__setattr__(k, r[k])
         db.session.commit()
         return {}
+
+    @authed
+    def options(self):
+        node = Node.query.filter_by(manager_id=session['user_id']).first()
+        if node is None:
+            abort(403, '只有站点管理员可以调用')
+
+        return UserSchema(many=True, view='courier').dump(
+            [c.user_id for c in Courier.query.filter_by(node_id=node.id).all()]
+        )
