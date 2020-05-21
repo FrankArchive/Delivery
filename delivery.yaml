@@ -172,6 +172,40 @@ paths:
             required:
               - message
       operationId: send_package
+    put:
+      description: |-
+        表示此快递成功到达下一站，只有站点manager与收货者可以调用
+        若收货方调用此接口，则表示自己已收到快递，且只能在快递处在最终node时可以调用
+      tags:
+        - deliverer
+      operationId: package_arrival
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              uuid:
+                type: string
+                description: 快递的唯一标识
+            required:
+              - uuid
+          description: ''
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        '200':
+          description: 成功送达当前站点
+        '403':
+          description: 调用者并非当前快递下一站的管理员
+          schema:
+            type: object
+            properties: {}
+        '404':
+          description: 没有相应的包裹订单
+          schema:
+            type: object
+            properties: {}
     get:
       description: |
         能获取到自己寄出的快递，自己将要收到的快递以及自己运输的快递
@@ -212,40 +246,21 @@ paths:
             - receiving
             - sending
             - delivering
-    patch:
-      description: |-
-        表示此快递成功到达下一站，只有站点manager与收货者可以调用
-        若收货方调用此接口，则表示自己已收到快递，且只能在快递处在最终node时可以调用
-      tags:
-        - deliverer
-      operationId: package_arrival
+    head:
+      summary: ''
+      operationId: head-package
+      responses:
+        '200':
+          description: OK
+      description: 仅管理员能调用，改变快件的快递员
       parameters:
         - in: body
           name: body
           schema:
             type: object
             properties:
-              uuid:
+              package_id:
                 type: string
-                description: 快递的唯一标识
-            required:
-              - uuid
-          description: ''
-      consumes:
-        - application/x-www-form-urlencoded
-      responses:
-        '200':
-          description: 成功送达当前站点
-        '403':
-          description: 调用者并非当前快递下一站的管理员
-          schema:
-            type: object
-            properties: {}
-        '404':
-          description: 没有相应的包裹订单
-          schema:
-            type: object
-            properties: {}
   /token:
     put:
       description: 生成一个指向当前账户的token
@@ -331,6 +346,27 @@ paths:
               $ref: '#/definitions/NodeItem'
       operationId: get_nodes
       description: 获取交通网络信息
+  /users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-users
+      description: ''
+    patch:
+      summary: ''
+      operationId: patch-users
+      responses:
+        '200':
+          description: OK
+      description: 更新个人信息
+    options:
+      summary: ''
+      operationId: options-users
+      responses:
+        '200':
+          description: OK
+      description: 管理员获取属于本站点的快递员
 definitions:
   UserItem:
     type: object
