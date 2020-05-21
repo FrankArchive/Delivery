@@ -38,4 +38,4 @@ class Tokens(Resource):
             abort(400)
         db.session.delete(token)
         db.session.commit()
-        return {}
+        return {'msg': '成功删除收货token'}

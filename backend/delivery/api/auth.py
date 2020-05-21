@@ -51,7 +51,7 @@ class Login(Resource):
         if user.open_id != open_id:
             abort(403, 'Wrong Wechat User')
         session['user_id'] = user.id
-        return {}
+        return {'msg': '成功登陆'}
 
 
 @auth.route('register')
@@ -73,4 +73,4 @@ class Register(Resource):
             abort(403, 'invalid wechat user')
         db.session.add(User(**req))
         db.session.commit()
-        return {}
+        return {'msg': '成功注册'}

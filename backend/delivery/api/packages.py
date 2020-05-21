@@ -41,7 +41,7 @@ class Packages(Resource):
             abort(404, '用户不存在')
         package.courier_id = req['id']
         db.session.commit()
-        pass
+        return {'msg': '成功指派送货员'}
 
     @authed
     @verify_keys({'token': str, 'node_uuid': str})
@@ -78,10 +78,10 @@ class Packages(Resource):
         if package.receiver_id == session['user_id']:
             package.progress = len(package.path) - 1
             db.session.commit()
-            return {'message': '快件成功送达'}
+            return {'msg': '快件成功送达'}
         if package.next_node.manager_id != session['user_id']:
             abort(403, '只有节点管理员能够调用')
 
         package.progress = package.progress + 1
         db.session.commit()
-        return {'message': f'快件成功抵达{package.current_node.id}号节点'}
+        return {'msg': f'快件成功抵达{package.current_node.id}号节点'}

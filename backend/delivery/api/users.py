@@ -28,7 +28,7 @@ class Users(Resource):
             if k in r.keys():
                 user.__setattr__(k, r[k])
         db.session.commit()
-        return {}
+        return {'msg': '成功更新用户信息'}
 
     @authed
     def options(self):
