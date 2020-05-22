@@ -20,7 +20,7 @@ class Packages(Resource):
         for k, v in {'sending': 'sender_id',
                      'receiving': 'receiver_id',
                      'delivering': 'courier_id',
-                     'manage': ''}.items():
+                     'manage': 'manager_id'}.items():
             pkgs = Package.query.filter_by(**{v: session['user_id']}).all() \
                 if f == 'all' or f == k else []
             ret[k] = [PackageSchema(view=k).dump(item) for item in pkgs]
@@ -83,5 +83,6 @@ class Packages(Resource):
             abort(403, '只有节点管理员能够调用')
 
         package.progress = package.progress + 1
+        package.manager_id = package.current_node.manager_id
         db.session.commit()
         return {'msg': f'快件成功抵达{package.current_node.id}号节点'}

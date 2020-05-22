@@ -69,6 +69,7 @@ class PackageSchema(ma.SQLAlchemyAutoSchema):
         'sending': ['token', 'percent_progress', 'path'],
         'delivering': ['token', 'address', 'phone'],
         'receiving': ['token', 'percent_progress', 'path', 'courier', 'sender', 'current_node', 'next_node'],
+        'manage': ['token', 'next_node', 'courier']
     }
 
     class Meta:
