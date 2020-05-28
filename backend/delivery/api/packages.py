@@ -4,7 +4,7 @@ from flask_restx import Namespace, Resource
 from delivery.calc import calculate_path
 from delivery.models import db, Package, Token, Node, User
 from delivery.schemas import PackageSchema
-from delivery.utils import authed, verify_keys
+from delivery.utils import authed, notify_user, verify_keys
 
 packages = Namespace('packages')
 
@@ -84,5 +84,14 @@ class Packages(Resource):
 
         package.progress = package.progress + 1
         package.manager_id = package.current_node.manager_id
+        if package.progress == len(package.path) - 1:
+            notify_user(
+                package.receiver.open_id,
+                'Inifv86VCZGFaBhIh2ECIini4tJPgBxpC9Gni68zsSM', {
+                    'node': package.current_node.token,
+                    'phone': package.current_node.manager.phone,
+                    'username': package.current_node.manager.username, 
+                    'code': package.token[:4]
+                })
         db.session.commit()
         return {'msg': f'快件成功抵达{package.current_node.id}号节点'}

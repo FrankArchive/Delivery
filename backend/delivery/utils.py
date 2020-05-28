@@ -26,8 +26,34 @@ def get_user_openid(code):
     raise PermissionError('wx code error: ' + str(res['errmsg']))
 
 
-def notify_user(openid, data):
-    pass
+def notify_user(open_id, template_id, data, state='developer'):
+    access_token = requests.get(
+        'https://api.weixin.qq.com/cgi-bin/token',
+        params={
+            'grant_type': 'client_credential',
+            'appid': APP_ID,
+            'secret': APP_SECRET,
+        }).json()
+    if access_token['errcode'] != 0:
+        raise PermissionError('wx code error: ' + str(access_token['errmsg']))
+    else:
+        access_token = access_token['access_token']
+    requests.post(
+        'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
+        params={
+            'access_token': access_token,
+            'touser': open_id,
+            'template_id': template_id,
+            'page': 'index',
+            'miniprogram_state': state,
+            'lang': 'zh_CN',
+            'data': {
+                'thing4': {'value': data['node']},
+                'phone_number5': {'value': data['phone']},
+                'name8': {'value': data['username']},
+                'character_string7': {'value': data['code']},
+            }
+        })
 
 
 def verify_keys(d: dict):
