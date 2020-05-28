@@ -87,7 +87,10 @@ class Package(db.Model):
 
     @property
     def next_node(self):
-        return Node.query.filter_by(id=self.path[self.progress + 1]).first()
+        try:
+            return Node.query.filter_by(id=self.path[self.progress + 1]).first()
+        except IndexError:
+            return self.current_node
 
     courier = db.relationship(
         'User', foreign_keys='Package.courier_id', lazy='select')
