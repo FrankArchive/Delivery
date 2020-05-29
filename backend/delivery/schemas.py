@@ -7,7 +7,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     views = {
         'self': [
             'username', 'phone', 'address',
-            'registeration_date'
+            'realname', 'registeration_date'
         ],
         'others': ['username'],
         'courier': ['username', 'phone']
@@ -65,9 +65,10 @@ class PackageSchema(ma.SQLAlchemyAutoSchema):
     sender = fields.Nested(UserSchema, only=['username'])
     current_node = fields.Nested(NodeSchema)
     next_node = fields.Nested(NodeSchema)
+    next_stop = fields.Dict(keys=fields.Str(), values=fields.Str())
     views = {
-        'sending': ['token', 'percent_progress', 'path'],
-        'delivering': ['token', 'address', 'phone'],
+        'sending': ['token', 'percent_progress'],
+        'delivering': ['token', 'next_stop'],
         'receiving': ['token', 'percent_progress', 'path', 'courier', 'sender', 'current_node', 'next_node'],
         'manage': ['token', 'next_node', 'courier']
     }

@@ -14,6 +14,7 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     open_id = db.Column(db.String(50))
+    realname = db.Column(db.String(128))
     username = db.Column(db.String(128))
     password = db.Column(db.String(128))
     phone = db.Column(db.String(32))
@@ -21,10 +22,11 @@ class User(db.Model):
     registeration_date = db.Column(
         db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, open_id, username, password, phone, address, *args, **kwargs):
+    def __init__(self, open_id, username, password, realname, phone, address, *args, **kwargs):
         self.open_id = open_id
         self.username = username
         self.password = hash_password(password)
+        self.realname = realname
         self.phone = phone
         self.address = address
 
@@ -92,6 +94,19 @@ class Package(db.Model):
         except IndexError:
             return self.current_node
 
+    @property
+    def next_stop(self):
+        if self.progress == len(self.path)-1:
+            return {
+                'address': self.receiver.address,
+                'phone': self.receiver.phone
+            }
+        else:
+            return {
+                'address': self.next_node.location,
+                'phone': self.next_node.manager.phone
+            }
+
     courier = db.relationship(
         'User', foreign_keys='Package.courier_id', lazy='select')
     sender = db.relationship(
@@ -101,10 +116,12 @@ class Package(db.Model):
 
     def __init__(self, sender_id, receiver_id, next_node_id, path):
         self.sender_id = sender_id
-        self.courier_id = -1
+        self.courier_id = sender_id
         self.receiver_id = receiver_id
-        self.current_node_id = -1
+        self.current_node_id = 0
         self.next_node_id = next_node_id
+        self.manager_id = Node.query.filter_by(
+            id=next_node_id).first().manager_id
         self.token = str(uuid4())
         self.path = path
 
